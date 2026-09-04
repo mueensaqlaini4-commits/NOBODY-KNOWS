@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#08080c">
+<title>NOBODY KNOWS — 20 Level Mystery</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07070a;
+  --card:#111117;
+  --card2:#17171f;
+  --line:#292933;
+  --text:#f5f5f7;
+  --muted:#8c8c98;
+  --purple:#9b7cff;
+  --mint:#67e5bf;
+  --red:#ff687b;
+  --gold:#f3cb6b;
+}
+
+body{
+  min-height:100vh;
+  color:var(--text);
+  background:
+  radial-gradient(circle at 10% 0%,rgba(155,124,255,.13),transparent 28%),
+  radial-gradient(circle at 100% 100%,rgba(103,229,191,.07),transparent 30%),
+  var(--bg);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding-bottom:100px;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px;
+  background:rgba(7,7,10,.86);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.logo{
+  font-size:17px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+
+.logo span{color:var(--purple)}
+
+.xp{
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:7px 12px;
+  color:var(--gold);
+  font-size:13px;
+}
+
+main{padding:18px}
+
+.screen{display:none}
+.screen.active{display:block}
+
+.hero{
+  padding:30px 3px;
+}
+
+.eyebrow{
+  color:var(--mint);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+
+h1{
+  font-size:clamp(40px,10vw,72px);
+  line-height:.92;
+  letter-spacing:-4px;
+  margin:12px 0 18px;
+}
+
+h2{
+  font-size:28px;
+  margin:5px 0;
+}
+
+h3{font-size:19px}
+
+p{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.card{
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,.18);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+}
+
+.case-card{
+  min-height:185px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:.2s;
+}
+
+.case-card:hover{
+  transform:translateY(-3px);
+  border-color:#484853;
+}
+
+.case-number{
+  color:var(--purple);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.case-title{
+  font-size:19px;
+  font-weight:850;
+  margin:8px 0;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+
+.tag{
+  color:#aaa;
+  background:#202027;
+  border-radius:8px;
+  padding:5px 8px;
+  font-size:9px;
+}
+
+.btn{
+  width:auto;
+  border:0;
+  border-radius:12px;
+  padding:12px 16px;
+  margin-top:13px;
+  background:var(--purple);
+  color:white;
+  font-weight:850;
+}
+
+.btn.secondary{
+  background:#1a1a21;
+  border:1px solid var(--line);
+}
+
+.btn.danger{
+  background:#50202a;
+}
+
+.btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:50;
+  display:flex;
+  justify-content:center;
+  gap:4px;
+  padding:8px;
+  background:rgba(9,9,13,.94);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);
+}
+
+.nav button{
+  border:0;
+  background:transparent;
+  color:#777;
+  padding:8px 15px;
+  border-radius:12px;
+  font-size:11px;
+}
+
+.nav button.active{
+  background:#1d1d26;
+  color:white;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin:15px 0;
+}
+
+.stat{
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+  color:var(--mint);
+  font-size:25px;
+}
+
+.stat small{color:var(--muted)}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.progress{
+  width:100%;
+  height:5px;
+  overflow:hidden;
+  background:#202027;
+  border-radius:20px;
+  margin:12px 0 23px;
+}
+
+.progress div{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--purple),var(--mint));
+  transition:.4s;
+}
+
+.scene{
+  background:#0d0d12;
+  border:1px solid var(--line);
+  border-radius:21px;
+  padding:18px;
+}
+
+.evidence{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:16px;
+}
+
+.clue{
+  min-height:125px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#16161d;
+  color:white;
+  text-align:left;
+  padding:14px;
+}
+
+.clue:hover{border-color:var(--purple)}
+
+.clue.found{
+  border-color:var(--mint);
+  background:rgba(103,229,191,.05);
+}
+
+.icon{
+  font-size:26px;
+  margin-bottom:8px;
+}
+
+.clue small{
+  display:block;
+  color:var(--muted);
+  margin-top:6px;
+  line-height:1.4;
+}
+
+.notice{
+  padding:13px;
+  margin:12px 0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#15151b;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.notice.good{
+  border-color:#315e51;
+  color:var(--mint);
+}
+
+.notice.bad{
+  border-color:#632f39;
+  color:#ff9ca7;
+}
+
+.puzzle{
+  padding:18px;
+  background:#101015;
+  border:1px solid var(--line);
+  border-radius:18px;
+}
+
+.option-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+  margin-top:15px;
+}
+
+.option{
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#18181f;
+  color:white;
+  text-align:left;
+}
+
+.option:hover{border-color:var(--purple)}
+
+textarea,input{
+  width:100%;
+  margin-top:10px;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  outline:none;
+  background:#09090d;
+  color:white;
+}
+
+textarea{
+  min-height:125px;
+  resize:vertical;
+}
+
+.rank{
+  display:inline-block;
+  padding:6px 10px;
+  border:1px solid #3c335d;
+  border-radius:20px;
+  background:#211d32;
+  color:#c7b8ff;
+  font-size:11px;
+  font-weight:850;
+}
+
+.locked{
+  opacity:.48;
+  filter:grayscale(.7);
+}
+
+.lockIcon{
+  float:right;
+  font-size:22px;
+}
+
+.back{
+  background:none;
+  border:0;
+  color:var(--muted);
+  margin-bottom:15px;
+}
+
+.memory-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:18px 0;
+}
+
+.memory-item{
+  background:#202027;
+  border-radius:10px;
+  padding:9px 12px;
+  font-weight:750;
+}
+
+.timer{
+  font-size:25px;
+  color:var(--red);
+  font-weight:950;
+}
+
+.levelBadge{
+  color:var(--gold);
+  font-size:11px;
+  letter-spacing:2px;
+}
+
+footer{
+  margin-top:30px;
+  text-align:center;
+  color:#4f4f57;
+  font-size:10px;
+}
+
+@media(max-width:500px){
+  main{padding:14px}
+  .evidence{grid-template-columns:1fr}
+  .option-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">NOBODY<span>KNOWS</span></div>
+  <div class="xp">XP <b id="xp">0</b></div>
+</header>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="screen active">
+
+  <div class="hero">
+    <div class="eyebrow">20 LEVELS / HARD MODE</div>
+
+    <h1>
+      NOBODY<br>
+      KNOWS.
+    </h1>
+
+    <p>
+      A mystery game where observation is only the beginning.
+      Think carefully. Connect evidence. Find the contradiction.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="case-number">INVESTIGATION ENGINE</div>
+
+    <h3 style="margin-top:8px">
+      Your mind is the tool.
+    </h3>
+
+    <p style="margin-top:7px">
+      No random answers. Every case contains a logical path.
+      Some evidence is intentionally misleading.
+    </p>
+
+    <button class="btn" onclick="show('levels')">
+      START INVESTIGATION
+    </button>
+  </div>
+
+  <div class="stat-grid">
+    <div class="card stat">
+      <strong id="homeSolved">0</strong>
+      <small>Solved</small>
+    </div>
+
+    <div class="card stat">
+      <strong id="homeXP">0</strong>
+      <small>XP</small>
+    </div>
+
+    <div class="card stat">
+      <strong id="homeRank">E</strong>
+      <small>Rank</small>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- LEVEL ARCHIVE -->
+<section id="levels" class="screen">
+
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">CASE ARCHIVE</div>
+      <h2>20 Investigations</h2>
+    </div>
+
+    <span class="rank" id="levelCount">1 / 20</span>
+  </div>
+
+  <div class="grid" id="levelGrid"></div>
+
+</section>
+
+
+<!-- GAME -->
+<section id="game" class="screen">
+
+  <button class="back" onclick="show('levels')">
+    ← CASE ARCHIVE
+  </button>
+
+  <div class="topbar">
+
+    <div>
+      <div class="case-number" id="gameNumber"></div>
+      <h2 id="gameTitle"></h2>
+    </div>
+
+    <span class="levelBadge" id="gameDifficulty"></span>
+
+  </div>
+
+  <div class="progress">
+    <div id="progressBar"></div>
+  </div>
+
+  <div id="gameContent"></div>
+
+</section>
+
+
+<!-- PROFILE -->
+<section id="profile" class="screen">
+
+  <div class="eyebrow">DETECTIVE PROFILE</div>
+  <h2>Investigator</h2>
+
+  <div class="card" style="margin-top:15px">
+
+    <span class="rank" id="profileRank">ROOKIE</span>
+
+    <div class="stat-grid">
+
+      <div class="stat">
+        <strong id="pXP">0</strong>
+        <small>XP</small>
+      </div>
+
+      <div class="stat">
+        <strong id="pSolved">0</strong>
+        <small>Solved</small>
+      </div>
+
+      <div class="stat">
+        <strong id="pClues">0</strong>
+        <small>Clues</small>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:13px">
+    <h3>Investigation Rule</h3>
+    <p style="margin-top:8px">
+      The fastest answer is not always the correct answer.
+      Evidence must support your conclusion.
+    </p>
+  </div>
+
+  <button class="btn danger" onclick="resetProgress()">
+    RESET ALL PROGRESS
+  </button>
+
+</section>
+
+</main>
+
+
+<nav class="nav">
+
+  <button id="navHome" class="active" onclick="show('home')">
+    ⌂<br>HOME
+  </button>
+
+  <button id="navLevels" onclick="show('levels')">
+    ◈<br>CASES
+  </button>
+
+  <button id="navProfile" onclick="show('profile')">
+    ◎<br>PROFILE
+  </button>
+
+</nav>
+
+<footer>
+  NOBODY KNOWS • LOCAL MYSTERY ENGINE
+</footer>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   NOBODY KNOWS
+   20 LEVEL PROGRESSIVE UNLOCK SYSTEM
+   NO API
+   NO BACKEND
+   LOCALSTORAGE
+========================================================= */
+
+const SAVE_KEY = "NOBODY_KNOWS_20_LEVEL";
+
+let state = JSON.parse(localStorage.getItem(SAVE_KEY) || "null") || {
+  xp:0,
+  solved:0,
+  clues:0,
+  unlocked:1,
+  completed:{}
+};
+
+let currentLevel = 1;
+let score = 100;
+let hints = 0;
+let found = [];
+let memoryTimer = null;
+
+
+/* =========================================================
+   LEVEL DATA
+========================================================= */
+
+const LEVELS = [
+
+{
+ id:1,
+ title:"THE CLOCK THAT LIED",
+ type:"OBSERVATION + PATTERN",
+ difficulty:"HARD",
+ desc:"A clock, a book and a strange number sequence don't agree.",
+ kind:"clock"
+},
+
+{
+ id:2,
+ title:"THREE SUSPECTS",
+ type:"LOGIC",
+ difficulty:"HARD",
+ desc:"Three people. Three statements. One contradiction.",
+ kind:"suspects"
+},
+
+{
+ id:3,
+ title:"THE MEMORY ROOM",
+ type:"MEMORY",
+ difficulty:"HARD",
+ desc:"The evidence disappears. Your memory remains.",
+ kind:"memory"
+},
+
+{
+ id:4,
+ title:"THE FOURTH DOOR",
+ type:"LOGIC",
+ difficulty:"HARD",
+ desc:"Four doors. Four statements. Only one route is safe.",
+ kind:"doors"
+},
+
+{
+ id:5,
+ title:"BROKEN TIMELINE",
+ type:"TIMELINE",
+ difficulty:"HARD+",
+ desc:"Five events were recorded out of order.",
+ kind:"timeline"
+},
+
+{
+ id:6,
+ title:"THE SILENT NUMBER",
+ type:"PATTERN",
+ difficulty:"HARD+",
+ desc:"A number sequence hides a second sequence.",
+ kind:"numbers"
+},
+
+{
+ id:7,
+ title:"FALSE WITNESS",
+ type:"DEDUCTION",
+ difficulty:"HARD+",
+ desc:"One witness is deliberately changing the story.",
+ kind:"witness"
+},
+
+{
+ id:8,
+ title:"ROOM 17",
+ type:"OBSERVATION",
+ difficulty:"HARD+",
+ desc:"Seven objects. One impossible detail.",
+ kind:"room"
+},
+
+{
+ id:9,
+ title:"THE MISSING PAGE",
+ type:"PATTERN + MEMORY",
+ difficulty:"VERY HARD",
+ desc:"A book contains a hidden mathematical trail.",
+ kind:"page"
+},
+
+{
+ id:10,
+ title:"MIDNIGHT SIGNAL",
+ type:"LOGIC",
+ difficulty:"VERY HARD",
+ desc:"Four signals were received at different times.",
+ kind:"signals"
+},
+
+{
+ id:11,
+ title:"THE EMPTY CHAIR",
+ type:"DEDUCTION",
+ difficulty:"VERY HARD",
+ desc:"The absence of something becomes evidence.",
+ kind:"chair"
+},
+
+{
+ id:12,
+ title:"FIVE KEYS",
+ type:"LOGIC",
+ difficulty:"VERY HARD",
+ desc:"Only one key combination can open the case.",
+ kind:"keys"
+},
+
+{
+ id:13,
+ title:"THE DOUBLE NOTE",
+ type:"PATTERN",
+ difficulty:"EXTREME",
+ desc:"Two sequences are hiding inside one message.",
+ kind:"double"
+},
+
+{
+ id:14,
+ title:"LAST WITNESS",
+ type:"DEDUCTION",
+ difficulty:"EXTREME",
+ desc:"Every statement contains a piece of truth.",
+ kind:"last"
+},
+
+{
+ id:15,
+ title:"THE BLACK FILE",
+ type:"MEMORY + LOGIC",
+ difficulty:"EXTREME",
+ desc:"Remember the details before connecting them.",
+ kind:"black"
+},
+
+{
+ id:16,
+ title:"SEVEN MINUTES",
+ type:"TIMELINE",
+ difficulty:"EXTREME",
+ desc:"A seven-minute gap changes the entire investigation.",
+ kind:"seven"
+},
+
+{
+ id:17,
+ title:"THE MIRROR CODE",
+ type:"PATTERN",
+ difficulty:"EXTREME",
+ desc:"Read the evidence from another direction.",
+ kind:"mirror"
+},
+
+{
+ id:18,
+ title:"NO NAME",
+ type:"DEDUCTION",
+ difficulty:"NIGHTMARE",
+ desc:"There is no obvious suspect. Find the missing assumption.",
+ kind:"name"
+},
+
+{
+ id:19,
+ title:"THE LAST CLUE",
+ type:"MULTI-LAYER",
+ difficulty:"NIGHTMARE",
+ desc:"Previous knowledge becomes part of the puzzle.",
+ kind:"lastclue"
+},
+
+{
+ id:20,
+ title:"MASTER CASE",
+ type:"ALL SYSTEMS",
+ difficulty:"MASTER",
+ desc:"The final investigation combines observation, logic, memory and deduction.",
+ kind:"master"
+}
+
+];
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function save(){
+  localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+  updateUI();
+}
+
+function getRank(){
+
+  if(state.xp >= 1500)
+    return {name:"MASTER DETECTIVE",letter:"S"};
+
+  if(state.xp >= 1000)
+    return {name:"ELITE",letter:"A"};
+
+  if(state.xp >= 600)
+    return {name:"EXPERT",letter:"B"};
+
+  if(state.xp >= 250)
+    return {name:"INVESTIGATOR",letter:"C"};
+
+  if(state.xp >= 100)
+    return {name:"ROOKIE",letter:"D"};
+
+  return {name:"BEGINNER",letter:"E"};
+}
+
+function updateUI(){
+
+  document.getElementById("xp").textContent=state.xp;
+
+  document.getElementById("homeSolved").textContent=state.solved;
+  document.getElementById("homeXP").textContent=state.xp;
+  document.getElementById("homeRank").textContent=getRank().letter;
+
+  document.getElementById("pXP").textContent=state.xp;
+  document.getElementById("pSolved").textContent=state.solved;
+  document.getElementById("pClues").textContent=state.clues;
+
+  document.getElementById("profileRank").textContent=getRank().name;
+
+  document.getElementById("levelCount").textContent=
+    Math.min(state.unlocked,20)+" / 20";
+
+  renderLevels();
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function show(id){
+
+  document.querySelectorAll(".screen")
+    .forEach(x=>x.classList.remove("active"));
+
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".nav button")
+    .forEach(x=>x.classList.remove("active"));
+
+  if(id==="home")
+    document.getElementById("navHome").classList.add("active");
+
+  if(id==="levels")
+    document.getElementById("navLevels").classList.add("active");
+
+  if(id==="profile")
+    document.getElementById("navProfile").classList.add("active");
+
+  updateUI();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+
+/* =========================================================
+   LEVEL ARCHIVE
+========================================================= */
+
+function renderLevels(){
+
+  const grid=document.getElementById("levelGrid");
+
+  if(!grid)return;
+
+  grid.innerHTML=LEVELS.map(level=>{
+
+    const unlocked=level.id<=state.unlocked;
+    const completed=!!state.completed[level.id];
+
+    return `
+      <div
+        class="card case-card ${unlocked?"":"locked"}"
+        ${unlocked?`onclick="startLevel(${level.id})"`:""}
+      >
+
+        <div>
+
+          <span class="lockIcon">
+            ${completed?"✓":unlocked?"":"🔒"}
+          </span>
+
+          <div class="case-number">
+            LEVEL ${String(level.id).padStart(2,"0")}
+          </div>
+
+          <div class="case-title">
+            ${level.title}
+          </div>
+
+          <p>${unlocked?level.desc:"Complete the previous investigation to unlock this level."}</p>
+
+          <div class="tags">
+            <span class="tag">${level.type}</span>
+            <span class="tag">${level.difficulty}</span>
+          </div>
+
+        </div>
+
+        ${
+          unlocked
+          ? `<button class="btn">
+               ${completed?"REINVESTIGATE":"INVESTIGATE"}
+             </button>`
+          : `<button class="btn secondary" disabled>
+               🔒 LOCKED
+             </button>`
+        }
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+
+/* =========================================================
+   START LEVEL
+========================================================= */
+
+function startLevel(id){
+
+  if(id>state.unlocked){
+
+    alert("This level is locked. Complete the previous level first.");
+
+    return;
+  }
+
+  currentLevel=id;
+  score=100;
+  hints=0;
+  found=[];
+
+  if(memoryTimer){
+    clearInterval(memoryTimer);
+    memoryTimer=null;
+  }
+
+  const level=LEVELS[id-1];
+
+  document.getElementById("gameNumber").textContent=
+    "LEVEL "+String(id).padStart(2,"0");
+
+  document.getElementById("gameTitle").textContent=
+    level.title;
+
+  document.getElementById("gameDifficulty").textContent=
+    level.difficulty;
+
+  show("game");
+
+  renderLevel();
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+function progress(value){
+  document.getElementById("progressBar").style.width=value+"%";
+}
+
+
+/* =========================================================
+   LEVEL ROUTER
+========================================================= */
+
+function renderLevel(){
+
+  const kind=LEVELS[currentLevel-1].kind;
+
+  if(kind==="clock")return levelClock();
+  if(kind==="suspects")return levelSuspects();
+  if(kind==="memory")return levelMemory();
+
+  return genericLevel();
+}
+
+
+/* =========================================================
+   LEVEL 1
+========================================================= */
+
+function levelClock(){
+
+  progress(20);
+
+  const clues=[
+    ["⏰","CLOCK","Shows 03:17.","clock"],
+    ["🔢","NOTE","8 / 13 / 21 / 34 / ?","number"],
+    ["📖","BOOK","Open on page 55.","book"],
+    ["🪟","WINDOW","The lamp appears in the reflection, but the clock does not.","window"]
+  ];
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="scene">
+
+      <div class="eyebrow">OBSERVATION</div>
+
+      <h3 style="margin-top:8px">
+        Find the four pieces of evidence.
+      </h3>
+
+      <p style="margin-top:7px">
+        ${LEVELS[0].desc}
+      </p>
+
+      <div class="evidence">
+
+        ${clues.map(c=>`
+
+          <button
+            class="clue ${found.includes(c[3])?"found":""}"
+            onclick="findClockClue('${c[3]}')"
+          >
+
+            <div class="icon">${c[0]}</div>
+
+            <b>${c[1]}</b>
+
+            <small>
+              ${found.includes(c[3])?"EVIDENCE RECORDED":c[2]}
+            </small>
+
+          </button>
+
+        `).join("")}
+
+      </div>
+
+      <button class="btn secondary" onclick="clockHint()">
+        💡 HINT (-10 XP)
+      </button>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function findClockClue(key){
+
+  if(!found.includes(key)){
+
+    found.push(key);
+
+    state.clues++;
+
+    save();
+  }
+
+  if(found.length===4){
+
+    setTimeout(clockPuzzle,400);
+
+  }else{
+
+    levelClock();
+  }
+}
+
+function clockHint(){
+
+  if(hints>=2){
+    alert("No more hints available.");
+    return;
+  }
+
+  hints++;
+  score-=10;
+
+  state.xp=Math.max(0,state.xp-10);
+
+  save();
+
+  document.getElementById("feedback").innerHTML=`
+    <div class="notice bad">
+      The sequence is more important than the clock.
+      Ask which number should connect the note to the book.
+    </div>
+  `;
+}
+
+function clockPuzzle(){
+
+  progress(50);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">PATTERN</div>
+
+      <h3>What number completes the sequence?</h3>
+
+      <p style="margin-top:8px">
+        8 → 13 → 21 → 34 → ?
+      </p>
+
+      <div class="option-grid">
+
+        <button class="option" onclick="clockAnswer(47)">47</button>
+
+        <button class="option" onclick="clockAnswer(55)">55</button>
+
+        <button class="option" onclick="clockAnswer(56)">56</button>
+
+        <button class="option" onclick="clockAnswer(61)">61</button>
+
+      </div>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function clockAnswer(n){
+
+  if(n!==55){
+
+    score-=10;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        Wrong. Look at how each number is created from the previous two.
+      </div>
+    `;
+
+    return;
+  }
+
+  document.getElementById("feedback").innerHTML=`
+    <div class="notice good">
+      Correct. The next number is 55.
+    </div>
+  `;
+
+  setTimeout(clockFinal,700);
+}
+
+function clockFinal(){
+
+  progress(80);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">FINAL DEDUCTION</div>
+
+      <h3>What is the most logical conclusion?</h3>
+
+      <p style="margin-top:8px">
+        The number sequence produces 55.
+        The book is on page 55.
+        The clock and another record both show 03:17.
+      </p>
+
+      <div class="option-grid">
+
+        <button class="option" onclick="clockFinalAnswer(1)">
+          The clock is reliable.
+        </button>
+
+        <button class="option" onclick="clockFinalAnswer(2)">
+          The repeated time may be a planted signal.
+        </button>
+
+        <button class="option" onclick="clockFinalAnswer(3)">
+          The book has no connection.
+        </button>
+
+        <button class="option" onclick="clockFinalAnswer(4)">
+          The window is irrelevant.
+        </button>
+
+      </div>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function clockFinalAnswer(n){
+
+  if(n!==2){
+
+    score-=15;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        That conclusion does not explain enough of the evidence.
+      </div>
+    `;
+
+    return;
+  }
+
+  finishLevel();
+}
+
+
+/* =========================================================
+   LEVEL 2
+========================================================= */
+
+function levelSuspects(){
+
+  progress(30);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="scene">
+
+      <div class="eyebrow">LOGIC GRID</div>
+
+      <h3>Three suspects. One contradiction.</h3>
+
+      <p style="margin-top:8px">
+        The museum object disappeared between 21:00 and 21:20.
+      </p>
+
+      <div style="margin-top:16px">
+
+        <button class="clue" style="width:100%;margin-bottom:9px"
+          onclick="suspectAnswer(1)">
+          <b>ARIN</b>
+          <small>
+            "I left the gallery at 21:05."
+          </small>
+        </button>
+
+        <button class="clue" style="width:100%;margin-bottom:9px"
+          onclick="suspectAnswer(2)">
+          <b>BEX</b>
+          <small>
+            "I saw Arin inside the gallery at 21:15."
+          </small>
+        </button>
+
+        <button class="clue" style="width:100%;margin-bottom:9px"
+          onclick="suspectAnswer(3)">
+          <b>CORA</b>
+          <small>
+            "Bex was with me in the security room at 21:15."
+          </small>
+        </button>
+
+      </div>
+
+      <div class="notice">
+        Do not decide who is guilty.
+        First identify the statement that creates the clearest contradiction.
+      </div>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function suspectAnswer(n){
+
+  if(n!==2){
+
+    score-=12;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        Not enough. Compare the exact times.
+      </div>
+    `;
+
+    return;
+  }
+
+  document.getElementById("feedback").innerHTML=`
+    <div class="notice good">
+      Bex's statement conflicts directly with Arin's claimed departure time.
+    </div>
+  `;
+
+  setTimeout(suspectSecond,700);
+}
+
+function suspectSecond(){
+
+  progress(70);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">EVIDENCE CHECK</div>
+
+      <h3>What should investigators verify next?</h3>
+
+      <div class="option-grid">
+
+        <button class="option" onclick="suspectSecondAnswer(1)">
+          Security camera footage
+        </button>
+
+        <button class="option" onclick="suspectSecondAnswer(2)">
+          Assume Cora is telling the truth
+        </button>
+
+        <button class="option" onclick="suspectSecondAnswer(3)">
+          Ignore the timestamps
+        </button>
+
+        <button class="option" onclick="suspectSecondAnswer(4)">
+          Guess the thief
+        </button>
+
+      </div>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function suspectSecondAnswer(n){
+
+  if(n!==1){
+
+    score-=10;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        That's an assumption. Independent evidence is stronger.
+      </div>
+    `;
+
+    return;
+  }
+
+  finishLevel();
+}
+
+
+/* =========================================================
+   LEVEL 3
+========================================================= */
+
+function levelMemory(){
+
+  progress(20);
+
+  const items=[
+    "BLUE KEY",
+    "17:42",
+    "ORBIT BOOK",
+    "NORTH WINDOW",
+    "BLACK COIN",
+    "NUMBER 27"
+  ];
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="scene">
+
+      <div class="eyebrow">MEMORY PROTOCOL</div>
+
+      <h3>Memorize the evidence.</h3>
+
+      <p style="margin-top:7px">
+        The room will disappear after a few seconds.
+        Remember exact details.
+      </p>
+
+      <div class="memory-list">
+
+        ${items.map(x=>
+          `<div class="memory-item">${x}</div>`
+        ).join("")}
+
+      </div>
+
+      <div class="timer" id="timer">10</div>
+
+    </div>
+  `;
+
+  let time=10;
+
+  memoryTimer=setInterval(()=>{
+
+    time--;
+
+    const t=document.getElementById("timer");
+
+    if(t)t.textContent=time;
+
+    if(time<=0){
+
+      clearInterval(memoryTimer);
+      memoryTimer=null;
+
+      memoryQuestion();
+    }
+
+  },1000);
+}
+
+function memoryQuestion(){
+
+  progress(55);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">MEMORY TEST</div>
+
+      <h3>Which item was NOT present?</h3>
+
+      <div class="option-grid">
+
+        <button class="option" onclick="memoryAnswer(1)">
+          BLUE KEY
+        </button>
+
+        <button class="option" onclick="memoryAnswer(2)">
+          RED KEY
+        </button>
+
+        <button class="option" onclick="memoryAnswer(3)">
+          BLACK COIN
+        </button>
+
+        <button class="option" onclick="memoryAnswer(4)">
+          NUMBER 27
+        </button>
+
+      </div>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function memoryAnswer(n){
+
+  if(n!==2){
+
+    score-=12;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        Incorrect. Search your memory instead of guessing.
+      </div>
+    `;
+
+    return;
+  }
+
+  document.getElementById("feedback").innerHTML=`
+    <div class="notice good">
+      Correct. RED KEY was never present.
+    </div>
+  `;
+
+  setTimeout(memorySecond,700);
+}
+
+function memorySecond(){
+
+  progress(80);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">MEMORY + LOGIC</div>
+
+      <h3>Which pair was actually recorded?</h3>
+
+      <div class="option-grid">
+
+        <button class="option" onclick="memoryPair(1)">
+          BLUE KEY + 17:42
+        </button>
+
+        <button class="option" onclick="memoryPair(2)">
+          RED KEY + 17:42
+        </button>
+
+        <button class="option" onclick="memoryPair(3)">
+          BLACK KEY + 27
+        </button>
+
+        <button class="option" onclick="memoryPair(4)">
+          BLUE KEY + 24:17
+        </button>
+
+      </div>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function memoryPair(n){
+
+  if(n!==1){
+
+    score-=10;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        Incorrect. Think back to the original room.
+      </div>
+    `;
+
+    return;
+  }
+
+  finishLevel();
+}
+
+
+/* =========================================================
+   LEVELS 4–20
+========================================================= */
+
+function genericLevel(){
+
+  const level=LEVELS[currentLevel-1];
+
+  progress(35);
+
+  const puzzles={
+
+    4:{
+      q:"Four doors have numbers: 12, 18, 24, 31. Which one breaks the pattern?",
+      opts:["12","18","24","31"],
+      ans:4
+    },
+
+    5:{
+      q:"Events: A=09:10, B=09:25, C=09:15, D=09:40. Which event happened second?",
+      opts:["A","B","C","D"],
+      ans:3
+    },
+
+    6:{
+      q:"2, 6, 12, 20, 30, ?",
+      opts:["36","40","42","44"],
+      ans:3
+    },
+
+    7:{
+      q:"A witness says: 'I saw the blue car before the red car.' Camera data shows red first. What should be questioned first?",
+      opts:["The weather","Witness reliability","Car color","Building height"],
+      ans:2
+    },
+
+    8:{
+      q:"A room has a candle, mirror, book and digital clock. The clock is the only object showing a reflection. What is suspicious?",
+      opts:["Candle","Mirror","Book","Clock"],
+      ans:4
+    },
+
+    9:{
+      q:"3, 5, 8, 13, 21, ?",
+      opts:["29","32","34","36"],
+      ans:3
+    },
+
+    10:{
+      q:"Signals arrive at 02:10, 02:14, 02:22, 02:34. What is the next likely interval?",
+      opts:["8 min","10 min","12 min","14 min"],
+      ans:3
+    },
+
+    11:{
+      q:"A table has four chairs. Three are dusty; one is clean. What can you conclude with certainty?",
+      opts:["Someone sat recently","The chair was moved recently","The chair is broken","Nobody entered"],
+      ans:2
+    },
+
+    12:{
+      q:"Keys are numbered 2, 4, 8, 16, ?. What comes next?",
+      opts:["20","24","30","32"],
+      ans:4
+    },
+
+    13:{
+      q:"1A, 2C, 3F, 4J, ?",
+      opts:["5N","5O","5P","5Q"],
+      ans:2
+    },
+
+    14:{
+      q:"Every witness gives one true detail and one false detail. Which evidence should receive priority?",
+      opts:["Rumor","Independent recording","Loudest witness","Oldest statement"],
+      ans:2
+    },
+
+    15:{
+      q:"You remember: BLACK, 17, NORTH, KEY. Which combination preserves the exact evidence?",
+      opts:["BLACK + 17 + NORTH + KEY","BLUE + 17 + NORTH + KEY","BLACK + 71 + SOUTH + KEY","BLACK + 17 + EAST + COIN"],
+      ans:1
+    },
+
+    16:{
+      q:"A timeline has a 7-minute unexplained gap. What is the strongest conclusion?",
+      opts:["The case is solved","The gap deserves investigation","The suspect is guilty","Nothing happened"],
+      ans:2
+    },
+
+    17:{
+      q:"Mirror code: 12 → 21, 34 → 43, 56 → ?",
+      opts:["56","65","46","76"],
+      ans:2
+    },
+
+    18:{
+      q:"A report says 'everyone was checked.' Later, one visitor has no check-in record. What assumption failed?",
+      opts:["That everyone entered through the recorded checkpoint","That clocks work","That doors exist","That visitors can read"],
+      ans:1
+    },
+
+    19:{
+      q:"Previous clue: Level 6 sequence answer was 42. What is 42 in this investigation?",
+      opts:["A time","A clue number","A reference value","A suspect name"],
+      ans:3
+    },
+
+    20:{
+      q:"MASTER CASE: Which principle is strongest when clues conflict?",
+      opts:["Choose the most dramatic clue","Trust the first statement","Prefer independently verifiable evidence","Guess the culprit"],
+      ans:3
+    }
+
+  };
+
+  const p=puzzles[currentLevel];
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">
+        ${level.type}
+      </div>
+
+      <h3 style="margin-top:8px">
+        ${level.title}
+      </h3>
+
+      <p style="margin-top:8px">
+        ${level.desc}
+      </p>
+
+      <div class="notice">
+        <b>Investigation:</b><br>
+        ${p.q}
+      </div>
+
+      <div class="option-grid">
+
+        ${p.opts.map((x,i)=>`
+
+          <button
+            class="option"
+            onclick="genericAnswer(${i+1},${p.ans})"
+          >
+            ${x}
+          </button>
+
+        `).join("")}
+
+      </div>
+
+      <button class="btn secondary"
+        onclick="genericHint()">
+        💡 HINT (-10 XP)
+      </button>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function genericAnswer(selected,correct){
+
+  if(selected!==correct){
+
+    score-=10;
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        Incorrect. Re-examine the evidence and think about the exact wording.
+      </div>
+    `;
+
+    return;
+  }
+
+  progress(75);
+
+  document.getElementById("feedback").innerHTML=`
+    <div class="notice good">
+      Correct deduction.
+    </div>
+  `;
+
+  setTimeout(()=>genericFinal(),600);
+}
+
+function genericFinal(){
+
+  progress(90);
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="puzzle">
+
+      <div class="eyebrow">FINAL THEORY</div>
+
+      <h3>
+        Explain your reasoning.
+      </h3>
+
+      <p style="margin-top:8px">
+        Write at least one sentence explaining why your answer
+        follows from the evidence.
+      </p>
+
+      <textarea
+        id="theory"
+        placeholder="My reasoning is..."
+      ></textarea>
+
+      <button class="btn" onclick="submitGenericTheory()">
+        SUBMIT THEORY
+      </button>
+
+      <div id="feedback"></div>
+
+    </div>
+  `;
+}
+
+function submitGenericTheory(){
+
+  const text=document.getElementById("theory").value.trim();
+
+  if(text.length<15){
+
+    document.getElementById("feedback").innerHTML=`
+      <div class="notice bad">
+        Your reasoning is too short. Explain the connection.
+      </div>
+    `;
+
+    return;
+  }
+
+  finishLevel();
+}
+
+function genericHint(){
+
+  if(hints>=2){
+
+    alert("No more hints available.");
+
+    return;
+  }
+
+  hints++;
+  score-=12;
+
+  state.xp=Math.max(0,state.xp-10);
+
+  save();
+
+  document.getElementById("feedback").innerHTML=`
+    <div class="notice bad">
+      Hint used. Think about the exact relationship between the clues,
+      not the story around them.
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   FINISH LEVEL
+========================================================= */
+
+function finishLevel(){
+
+  progress(100);
+
+  let bonus=hints===0?30:0;
+
+  let earned=Math.max(10,score+bonus);
+
+  const alreadyCompleted=!!state.completed[currentLevel];
+
+  if(!alreadyCompleted){
+
+    state.completed[currentLevel]=true;
+
+    state.solved++;
+
+    state.xp+=earned;
+
+    if(currentLevel===state.unlocked && state.unlocked<20){
+
+      state.unlocked++;
+    }
+
+    save();
+  }
+
+  const next=
+    currentLevel<20
+    ? currentLevel+1
+    : null;
+
+  document.getElementById("gameContent").innerHTML=`
+
+    <div class="card" style="text-align:center">
+
+      <div class="eyebrow">
+        INVESTIGATION COMPLETE
+      </div>
+
+      <h2 style="margin-top:10px">
+        ${currentLevel===20?"MASTER CASE SOLVED":"CASE SOLVED"}
+      </h2>
+
+      <div class="stat-grid">
+
+        <div class="stat">
+          <strong>${score}</strong>
+          <small>Score</small>
+        </div>
+
+        <div class="stat">
+          <strong>${earned}</strong>
+          <small>XP</small>
+        </div>
+
+        <div class="stat">
+          <strong>${hints}</strong>
+          <small>Hints</small>
+        </div>
+
+      </div>
+
+      ${
+        hints===0
+        ?
+        `<div class="notice good">
+          ★ PERFECT INVESTIGATION
+        </div>`
+        :
+        `<div class="notice">
+          Case completed. Try again without hints for a higher score.
+        </div>`
+      }
+
+      ${
+        next
+        ?
+        `
+        <div class="notice good">
+          🔓 LEVEL ${String(next).padStart(2,"0")} UNLOCKED
+        </div>
+
+        <button class="btn"
+          onclick="startLevel(${next})">
+          START LEVEL ${String(next).padStart(2,"0")}
+        </button>
+        `
+        :
+        `
+        <div class="notice good">
+          🏆 ALL 20 LEVELS COMPLETED
+        </div>
+        `
+      }
+
+      <button class="btn secondary"
+        onclick="show('levels')">
+        CASE ARCHIVE
+      </button>
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetProgress(){
+
+  const ok=confirm(
+    "Reset all 20-level progress? This cannot be undone."
+  );
+
+  if(!ok)return;
+
+  state={
+    xp:0,
+    solved:0,
+    clues:0,
+    unlocked:1,
+    completed:{}
+  };
+
+  localStorage.removeItem(SAVE_KEY);
+
+  updateUI();
+
+  show("home");
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+updateUI();
+
+</script>
+
+</body>
+</html>
